@@ -6,6 +6,7 @@
         height: 100%;
         max-width: 1450px;
         margin: 0 auto;
+        cursor: pointer;
 
         .logo{
             width: 6rem; 
@@ -35,7 +36,13 @@
             }
 
             li{
+                display: inline-block;
                 list-style-type: none;
+                margin-right: 1.5rem;
+
+                &:last-child {
+                    margin-right: 0;
+                }
 
                 a{
                     font-size: 1.8rem;
