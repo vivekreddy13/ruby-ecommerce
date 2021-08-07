@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { withRouter } from 'react-router-dom';
-import { resetAllAuthForms, signUpUser} from './../../redux/User/user.actions';
+import { useHistory } from 'react-router-dom';
+import { signUpUserStart } from './../../redux/User/user.actions';
 
 
 import './styles.scss';
@@ -11,13 +11,14 @@ import FormInput from '../forms/FormInput';
 import Button from './../forms/Button';
 
 const mapState = ({ user }) => ({
-    signUpSucess: user.signUpSucess,
-    signUpError: user.signUpError
+    currentUser: user.currentUser,
+    userErr: user.userErr
 });
 
 const Signup = props => {
-    const { signUpSucess, signUpError } = useSelector(mapState);
     const dispatch = useDispatch();
+    const history = useHistory();
+    const { currentUser, userErr } = useSelector(mapState);
     const [displayName, setDisplayName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -25,22 +26,21 @@ const Signup = props => {
     const [errors, setErrors] = useState([]);
 
     useEffect(() => {
-        if (signUpSucess) {
+        if (currentUser) {
             reset();
-            dispatch(resetAllAuthForms())
-            props.history.push('/');
+            history.push('/');
         }
 
-    }, [signUpSucess]);
+    }, [currentUser]);
 
     useEffect(() => {
-        if (Array.isArray(signUpError) && signUpError.length > 0) {
-            setErrors(signUpError);
+        if (Array.isArray(userErr) && userErr.length > 0) {
+            setErrors(userErr);
         }
 
-    }, [signUpError]);
+    }, [userErr]);
 
-    const reset =() => {
+    const reset = () => {
         setDisplayName('');
         setEmail('');
         setPassword('');
@@ -49,9 +49,9 @@ const Signup = props => {
     }
 
 
-    const handleFormSubmit = async event => {
+    const handleFormSubmit = event => {
         event.preventDefault();
-        dispatch(signUpUser({
+        dispatch(signUpUserStart({
             displayName,
             email,
             password,
@@ -96,21 +96,24 @@ const Signup = props => {
                             name="email"
                             value={email}
                             placeholder="Email"
-                            handleChange={e => setEmail(e.target.value)}                        />
+                            handleChange={e => setEmail(e.target.value)}                        
+                            />
 
                         <FormInput
                             type="password"
                             name="password"
                             value={password}
                             placeholder="Password"
-                            handleChange={e => setPassword(e.target.value)}                        />
+                            handleChange={e => setPassword(e.target.value)}                        
+                            />
 
                         <FormInput
                             type="password"
                             name="confirmPassword"
                             value={confirmPassword}
                             placeholder="Confirm Password"
-                            handleChange={e => setConfirmPassword(e.target.value)}                        />
+                            handleChange={e => setConfirmPassword(e.target.value)}                        
+                            />
 
                         <Button type="Submit">
                             Register
@@ -122,4 +125,4 @@ const Signup = props => {
         );           
 }
 
-export default withRouter(Signup);
+export default Signup;
